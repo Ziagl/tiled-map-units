@@ -33,7 +33,6 @@ test('markNonPassableFields', () => {
     expect(success).toBe(true);
     const output = unitManager.print();
     expect(output).toContain('0 -1 -1 0');
-<<<<<<< HEAD
 });
 test('createUnit', () => {
     const exampleSeaMap:number [] = Array(16).fill(0);
@@ -55,6 +54,4 @@ test('createUnitPositionOccupied', () => {
     const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
     const success = unitManager.createUnit(exampleUnit, 0);
     expect(success).toBe(false);
-=======
->>>>>>> c2060537281e6d51fcb9ece53a11f4f515dd6a69
 });
