@@ -54,14 +54,22 @@ export class UnitManager
             return false;
         }
         // early exit if layer position is already occupied
+<<<<<<< HEAD
         let index = Utils.getUnitOnPosition(unit.coordinate, this._map[layer]!, this._hexDefinition);
+=======
+        const index = Utils.getUnitOnPosition(unit.coordinate, this._map[layer]!, this._hexDefinition);
+>>>>>>> c2060537281e6d51fcb9ece53a11f4f515dd6a69
         if(index !== 0) {
             return false;
         }
 
+<<<<<<< HEAD
         this._unitStore.push(unit);
         index = this._unitStore.length;
         Utils.setUnitOnPosition(unit.coordinate, this._map[layer]!, this._hexDefinition, index);
+=======
+        // TODO add unit
+>>>>>>> c2060537281e6d51fcb9ece53a11f4f515dd6a69
 
         return true;
     }

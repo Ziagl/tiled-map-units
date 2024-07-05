@@ -14,6 +14,7 @@ export class Utils {
     public static getUnitOnPosition(coordinates: CubeCoordinates, map: number[][], hexDefinition: any): number {
         const hex = new hexDefinition([coordinates.q, coordinates.r]);
         const offset = hexToOffset(hex);
+<<<<<<< HEAD
         return map[offset.row]?.[offset.col] ?? 0;
     }
 
@@ -23,5 +24,8 @@ export class Utils {
         const offset = hexToOffset(hex);
         // @ts-ignore
         map[offset.row][offset.col] = index;
+=======
+        return map[offset.row]?.[offset.col]!;
+>>>>>>> c2060537281e6d51fcb9ece53a11f4f515dd6a69
     }
 }
