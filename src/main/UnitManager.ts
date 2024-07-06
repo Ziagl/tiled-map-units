@@ -58,11 +58,10 @@ export class UnitManager
         if(index !== 0) {
             return false;
         }
-
+        // add unit to store
         this._unitStore.push(unit);
         index = this._unitStore.length;
         Utils.setUnitOnPosition(unit.coordinate, this._map[layer]!, this._hexDefinition, index);
-
         return true;
     }
 
