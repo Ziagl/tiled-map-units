@@ -4,7 +4,8 @@ import { Utils } from "./models/Utils";
 
 export class UnitManager
 {
-    private _unitStore: IUnit[] = [];
+    private _unitStore: Map<number, IUnit>;
+    private _lastUnitStoreId: number = 0;
     private _map:number[][][] = []; // 2D array with different layers (3rd dimension)
     private _map_layers:number = 0;
     private _map_columns:number = 0;
@@ -25,6 +26,9 @@ export class UnitManager
         // initilize definition to convert offset -> cube coordinates
         const hexSetting = {offset: -1 as HexOffset, orientation: Orientation.POINTY};
         this._hexDefinition = defineHex(hexSetting);
+
+        // initialize unit store
+        this._unitStore = new Map<number, IUnit>();
     }
 
     // pass an array to mask all not passable fields (value > 0 == unpassable field)
@@ -59,15 +63,27 @@ export class UnitManager
             return false;
         }
         // add unit to store
-        this._unitStore.push(unit);
-        index = this._unitStore.length;
-        Utils.setUnitOnPosition(unit.unitPosition, this._map[layer]!, this._hexDefinition, index);
+        this._lastUnitStoreId = this._lastUnitStoreId + 1;
+        unit.unitId = this._lastUnitStoreId;
+        this._unitStore.set(unit.unitId, unit);
+        Utils.setUnitOnPosition(unit.unitPosition, this._map[layer]!, this._hexDefinition, unit.unitId);
         return true;
+    }
+
+    // returns unit by id or undefined if not found
+    public getUnitById(unitId:number):IUnit|undefined {
+        return this._unitStore.get(unitId);
     }
 
     // returns all units of given player number
     public getUnitsOfPlayer(playerId:number):IUnit[] {
-        return this._unitStore.filter(unit => unit.unitPlayer === playerId);
+        let units:IUnit[] = [];
+        this._unitStore.forEach(unit => {
+            if(unit.unitPlayer === playerId) {
+                units.push(unit);
+            }
+        });
+        return units;
     }
 
     // print generated map structured (one row as one line)

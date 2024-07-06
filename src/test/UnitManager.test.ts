@@ -1,6 +1,7 @@
 import { UnitManager } from "../main";
 
 const exampleUnit = {
+    unitId: 0,
     unitPosition: {q: 0, r: 0, s: 0},
     unitPlayer: 1,
     unitType: 1,
@@ -41,6 +42,14 @@ test('createUnit', () => {
     expect(success).toBe(true);
     const output = unitManager.print();
     expect(output).toContain('1 0 0 0');
+});
+test('createUnitAndSetId', () => {
+    const exampleSeaMap:number [] = Array(16).fill(0);
+    const unitManager = new UnitManager([...exampleSeaMap], 1, 4, 4);
+    let exampleUnitTest = {...exampleUnit};
+    const success = unitManager.createUnit(exampleUnitTest, 0);
+    expect(success).toBe(true);
+    expect(exampleUnitTest.unitId).toBeGreaterThan(0);
 });
 test('createUnitWrongLayer', () => {
     const exampleMap:number [] = Array(16).fill(0);

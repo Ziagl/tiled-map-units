@@ -2,6 +2,7 @@ import { CubeCoordinates } from "honeycomb-grid";
 
 export interface IUnit {
     // base
+    unitId: number;                 // id = index in unit store
     unitPosition: CubeCoordinates;  // its position on the map
     unitPlayer: number;             // id of player this unit belongs to
     unitType: number;               // the type of this unit (value of an enum?)
