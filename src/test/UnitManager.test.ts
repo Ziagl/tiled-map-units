@@ -89,3 +89,15 @@ test('getUnitsOfPlayer', () => {
     const units = unitManager.getUnitsOfPlayer(1);
     expect(units.length).toBe(2);
 });
+test('deleteUnit', () => {
+    let exampleMap:number [] = Array(16).fill(0);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    let success = unitManager.createUnit(exampleUnit, 0);
+    expect(success).toBe(true);
+    let units = unitManager.getUnitsOfPlayer(exampleUnit.unitPlayer);
+    expect(units.length).toBe(1);
+    success = unitManager.removeUnit(exampleUnit.unitId);
+    expect(success).toBe(true);
+    units = unitManager.getUnitsOfPlayer(exampleUnit.unitPlayer);
+    expect(units.length).toBe(0);
+});

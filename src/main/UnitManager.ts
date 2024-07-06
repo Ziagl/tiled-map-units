@@ -70,6 +70,17 @@ export class UnitManager
         return true;
     }
 
+    // removes unit with given unit id from map
+    public removeUnit(unitId:number):boolean {
+        let unit = this._unitStore.get(unitId);
+        if(unit === undefined) {
+            return false;
+        }
+        this._unitStore.delete(unitId);
+        Utils.setUnitOnPosition(unit.unitPosition, this._map[unit.unitPosition.s]!, this._hexDefinition, 0);
+        return true;
+    }
+
     // returns unit by id or undefined if not found
     public getUnitById(unitId:number):IUnit|undefined {
         return this._unitStore.get(unitId);
