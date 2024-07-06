@@ -1,15 +1,15 @@
 import { UnitManager } from "../main";
 
 const exampleUnit = {
-    coordinate: {q: 0, r: 0, s: 0},
-    type: 1,
-    player: 1,
-    health: 100,
-    maxHealth: 100,
-    attack: 10,
-    defense: 10,
-    movement: 10,
-    range: 1,
+    unitPosition: {q: 0, r: 0, s: 0},
+    unitPlayer: 1,
+    unitType: 1,
+    unitHealth: 100,
+    unitMaxHealth: 100,
+    unitMovement: 10,
+    unitAttack: 10,
+    unitDefense: 10,
+    unitRange: 1,
     canAttack: true,
     canMove: true
 }
@@ -54,4 +54,29 @@ test('createUnitPositionOccupied', () => {
     const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
     const success = unitManager.createUnit(exampleUnit, 0);
     expect(success).toBe(false);
+});
+test('createUnitAddTwoUnitsOnSameTile', () => {
+    let exampleMap:number [] = Array(16).fill(0);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    let success = unitManager.createUnit(exampleUnit, 0);
+    expect(success).toBe(true);
+    success = unitManager.createUnit(exampleUnit, 0);
+    expect(success).toBe(false);
+});
+test('getUnitsOfPlayer', () => {
+    let exampleMap:number [] = Array(16).fill(0);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    let success = unitManager.createUnit(exampleUnit, 0);
+    expect(success).toBe(true);
+    let exampleUnit2 = {...exampleUnit};
+    exampleUnit2.unitPosition = {q: 1, r: 0, s: -1};
+    success = unitManager.createUnit(exampleUnit2, 0);
+    expect(success).toBe(true);
+    let exampleUnit3 = {...exampleUnit};
+    exampleUnit3.unitPosition = {q: 1, r: 1, s: -2};
+    exampleUnit3.unitPlayer = 2;
+    success = unitManager.createUnit(exampleUnit3, 0);
+    expect(success).toBe(true);
+    const units = unitManager.getUnitsOfPlayer(1);
+    expect(units.length).toBe(2);
 });

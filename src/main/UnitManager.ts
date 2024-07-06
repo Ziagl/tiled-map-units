@@ -54,15 +54,20 @@ export class UnitManager
             return false;
         }
         // early exit if layer position is already occupied
-        let index = Utils.getUnitOnPosition(unit.coordinate, this._map[layer]!, this._hexDefinition);
+        let index = Utils.getUnitOnPosition(unit.unitPosition, this._map[layer]!, this._hexDefinition);
         if(index !== 0) {
             return false;
         }
         // add unit to store
         this._unitStore.push(unit);
         index = this._unitStore.length;
-        Utils.setUnitOnPosition(unit.coordinate, this._map[layer]!, this._hexDefinition, index);
+        Utils.setUnitOnPosition(unit.unitPosition, this._map[layer]!, this._hexDefinition, index);
         return true;
+    }
+
+    // returns all units of given player number
+    public getUnitsOfPlayer(playerId:number):IUnit[] {
+        return this._unitStore.filter(unit => unit.unitPlayer === playerId);
     }
 
     // print generated map structured (one row as one line)
