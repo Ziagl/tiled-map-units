@@ -101,3 +101,19 @@ test('deleteUnit', () => {
     units = unitManager.getUnitsOfPlayer(exampleUnit.unitPlayer);
     expect(units.length).toBe(0);
 });
+test('getUnitsByCoordinates', () => {
+    let exampleMap:number [] = Array(16).fill(0);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    let success = unitManager.createUnit(exampleUnit, 0);
+    expect(success).toBe(true);
+    let otherUnit = exampleUnit;
+    otherUnit.unitPosition = {q: 1, r: 1, s: -2};
+    success = unitManager.createUnit(otherUnit, 0);
+    expect(success).toBe(true);
+    let units = unitManager.getUnitsByCoordinates({q: 1, r: 1, s: -2}, 1);
+    expect(units.length).toBe(1);
+    units = unitManager.getUnitsByCoordinates({q: 1, r: 1, s: -2}, 2);
+    expect(units.length).toBe(0);
+    units = unitManager.getUnitsByCoordinates({q: 0, r: 0, s: 0}, 1);
+    expect(units.length).toBe(0);
+});

@@ -1,4 +1,4 @@
-import { HexOffset, Orientation, defineHex } from "honeycomb-grid";
+import { CubeCoordinates, HexOffset, Orientation, defineHex } from "honeycomb-grid";
 import { IUnit } from "./interfaces/IUnit";
 import { Utils } from "./models/Utils";
 
@@ -84,6 +84,19 @@ export class UnitManager
     // returns unit by id or undefined if not found
     public getUnitById(unitId:number):IUnit|undefined {
         return this._unitStore.get(unitId);
+    }
+
+    // returns all units on this coordinates
+    public getUnitsByCoordinates(coords:CubeCoordinates, playerId:number):IUnit[] {
+        let foundUnits:IUnit[] = [];
+        const playerUnits = this.getUnitsOfPlayer(playerId);
+        playerUnits.forEach(unit => {
+            if(unit.unitPosition.q === coords.q &&
+               unit.unitPosition.r === coords.r) {
+               foundUnits.push(unit);
+            }
+        });
+        return foundUnits;
     }
 
     // returns all units of given player number
