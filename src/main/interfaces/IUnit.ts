@@ -3,11 +3,13 @@ import { CubeCoordinates } from "honeycomb-grid";
 export interface IUnit {
     // base
     unitId: number;                 // id = index in unit store
-    unitPosition: CubeCoordinates;  // its position on the map
     unitPlayer: number;             // id of player this unit belongs to
     unitType: number;               // the type of this unit (value of an enum?)
     unitHealth: number;             // current health points
-    unitMaxHealth: number;          // maximum health points              
+    unitMaxHealth: number;          // maximum health points
+    // position
+    unitPosition: CubeCoordinates;  // its position on the map
+    unitLayer: number;              // index of layer this unit is on           
     // stats
     unitMovement: number;           // movement points (affects movement range)
     unitAttack: number;             // attack points (damage in fight)

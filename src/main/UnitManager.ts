@@ -1,6 +1,7 @@
 import { CubeCoordinates, HexOffset, Orientation, defineHex } from "honeycomb-grid";
 import { IUnit } from "./interfaces/IUnit";
 import { Utils } from "./models/Utils";
+import { TileType } from "./enums/TileType";
 
 export class UnitManager
 {
@@ -44,7 +45,7 @@ export class UnitManager
                 // @ts-ignore
                 if(map2d[i][j] !== 0) {
                     // @ts-ignore
-                    this._map[layer][i][j] = -1;
+                    this._map[layer][i][j] = TileType.UNPASSABLE;
                 }
             }
         }
@@ -52,21 +53,21 @@ export class UnitManager
     }
 
     // creates a new unit at given layer, returns false if not possible
-    public createUnit(unit:IUnit, layer:number):boolean {
+    public createUnit(unit:IUnit):boolean {
         // early exit if layer is not valid
-        if(layer < 0 || layer >= this._map_layers) {
+        if(unit.unitLayer < 0 || unit.unitLayer >= this._map_layers) {
             return false;
         }
         // early exit if layer position is already occupied
-        let index = Utils.getUnitOnPosition(unit.unitPosition, this._map[layer]!, this._hexDefinition);
-        if(index !== 0) {
+        let unitId = Utils.getUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition);
+        if(unitId != TileType.EMPTY) {
             return false;
         }
         // add unit to store
         this._lastUnitStoreId = this._lastUnitStoreId + 1;
         unit.unitId = this._lastUnitStoreId;
         this._unitStore.set(unit.unitId, unit);
-        Utils.setUnitOnPosition(unit.unitPosition, this._map[layer]!, this._hexDefinition, unit.unitId);
+        Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition, unit.unitId);
         return true;
     }
 
@@ -77,25 +78,22 @@ export class UnitManager
             return false;
         }
         this._unitStore.delete(unitId);
-        Utils.setUnitOnPosition(unit.unitPosition, this._map[unit.unitPosition.s]!, this._hexDefinition, 0);
+        Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitPosition.s]!, this._hexDefinition, TileType.EMPTY);
         return true;
     }
 
-    // returns unit by id or undefined if not found
-    public getUnitById(unitId:number):IUnit|undefined {
-        return this._unitStore.get(unitId);
-    }
-
-    // returns all units on this coordinates
+    // returns all units on this coordinates for given player
     public getUnitsByCoordinates(coords:CubeCoordinates, playerId:number):IUnit[] {
         let foundUnits:IUnit[] = [];
-        const playerUnits = this.getUnitsOfPlayer(playerId);
-        playerUnits.forEach(unit => {
-            if(unit.unitPosition.q === coords.q &&
-               unit.unitPosition.r === coords.r) {
-               foundUnits.push(unit);
+        for(let layer = 0; layer < this._map_layers; ++layer) {
+            const unitId = Utils.getUnitIdOnPosition(coords, this._map[layer]!, this._hexDefinition);
+            if(unitId !== TileType.EMPTY && unitId !== TileType.UNPASSABLE) {
+                const unit = this._unitStore.get(unitId);
+                if(unit && unit.unitPlayer == playerId) {
+                    foundUnits.push(unit);
+                }
             }
-        });
+        }
         return foundUnits;
     }
 
