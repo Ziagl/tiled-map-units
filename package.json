@@ -1,6 +1,6 @@
 {
   "name": "@ziagl/tiled-map-units",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A library for data and logic for units of tiled based games",
   "author": "Werner Ziegelwanger (ziagl)",
   "license": "GNU LESSER GENERAL PUBLIC LICENSE",
