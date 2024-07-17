@@ -122,3 +122,13 @@ test('getUnitsByCoordinates', () => {
     units = unitManager.getUnitsByCoordinates({q: 0, r: 0, s: 0}, 3);
     expect(units.length).toBe(0);
 });
+test('moveUnit', () => {
+    let exampleMap:number [] = Array(16).fill(0);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    let success = unitManager.createUnit(exampleUnit);
+    expect(success).toBe(true);
+    const newPosition = {q: 1, r: 1, s: -2};
+    success = unitManager.moveUnit(exampleUnit.unitId, newPosition);
+    expect(success).toBe(true);
+    expect(exampleUnit.unitPosition).toStrictEqual(newPosition);
+});

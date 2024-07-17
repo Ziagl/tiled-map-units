@@ -59,7 +59,7 @@ export class UnitManager
             return false;
         }
         // early exit if layer position is already occupied
-        let unitId = Utils.getUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition);
+        const unitId = Utils.getUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition);
         if(unitId != TileType.EMPTY) {
             return false;
         }
@@ -73,12 +73,31 @@ export class UnitManager
 
     // removes unit with given unit id from map
     public removeUnit(unitId:number):boolean {
-        let unit = this._unitStore.get(unitId);
+        const unit = this._unitStore.get(unitId);
         if(unit === undefined) {
             return false;
         }
         this._unitStore.delete(unitId);
         Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitPosition.s]!, this._hexDefinition, TileType.EMPTY);
+        return true;
+    }
+
+    // move unit
+    public moveUnit(unitId:number, destination:CubeCoordinates):boolean {
+        const unit = this._unitStore.get(unitId);
+        if(unit === undefined) {
+            return false;
+        }
+        // early exit if destination is not passable
+        const unitIdOnDestination = Utils.getUnitIdOnPosition(destination, this._map[unit.unitLayer]!, this._hexDefinition);
+        if(unitIdOnDestination !== TileType.EMPTY) {
+            return false;
+        }
+        // remove unit from old position
+        Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition, TileType.EMPTY);
+        // set unit to new position
+        Utils.setUnitIdOnPosition(destination, this._map[unit.unitLayer]!, this._hexDefinition, unitId);
+        unit.unitPosition = destination;
         return true;
     }
 
