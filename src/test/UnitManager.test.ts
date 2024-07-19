@@ -20,25 +20,15 @@ test('initialize', () => {
     const exampleSeaMap:number [] = Array(16).fill(0);
     const exampleLandMap:number [] = Array(16).fill(1);  
     const exampleAirMap:number [] = Array(16).fill(2);
-    const unitManager = new UnitManager([...exampleSeaMap, ...exampleLandMap, ...exampleAirMap], 3, 4, 4);
+    const unitManager = new UnitManager([...exampleSeaMap, ...exampleLandMap, ...exampleAirMap], 3, 4, 4, [[],[],[]]);
     const output = unitManager.print();
     expect(output).toContain('Layer 1');
     expect(output).toContain('Layer 2');
     expect(output).toContain('Layer 3');
 });
-test('markNonPassableFields', () => {
-    const exampleSeaMap:number [] = Array(16).fill(0);
-    const exampleLandMap:number [] = Array(16).fill(1);  
-    const exampleAirMap:number [] = Array(16).fill(2);
-    const unitManager = new UnitManager([...exampleSeaMap, ...exampleLandMap, ...exampleAirMap], 3, 4, 4);
-    const success = unitManager.markNonPassableFields([0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0], 0);
-    expect(success).toBe(true);
-    const output = unitManager.print();
-    expect(output).toContain('0 -1 -1 0');
-});
 test('createUnit', () => {
     const exampleSeaMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleSeaMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleSeaMap], 1, 4, 4, [[]]);
     const success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(true);
     const output = unitManager.print();
@@ -46,7 +36,7 @@ test('createUnit', () => {
 });
 test('createUnitAndSetId', () => {
     const exampleSeaMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleSeaMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleSeaMap], 1, 4, 4, [[]]);
     let exampleUnitTest = {...exampleUnit};
     const success = unitManager.createUnit(exampleUnitTest);
     expect(success).toBe(true);
@@ -54,7 +44,7 @@ test('createUnitAndSetId', () => {
 });
 test('createUnitWrongLayer', () => {
     const exampleMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
     let otherUnit = {...exampleUnit};
     otherUnit.unitLayer = 1;
     const success = unitManager.createUnit(otherUnit);
@@ -63,13 +53,13 @@ test('createUnitWrongLayer', () => {
 test('createUnitPositionOccupied', () => {
     let exampleMap:number [] = Array(16).fill(0);
     exampleMap[0] = 1;
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[1]]);
     const success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(false);
 });
 test('createUnitAddTwoUnitsOnSameTile', () => {
     let exampleMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
     let success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(true);
     success = unitManager.createUnit(exampleUnit);
@@ -77,7 +67,7 @@ test('createUnitAddTwoUnitsOnSameTile', () => {
 });
 test('getUnitsOfPlayer', () => {
     let exampleMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
     let success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(true);
     let exampleUnit2 = {...exampleUnit};
@@ -94,7 +84,7 @@ test('getUnitsOfPlayer', () => {
 });
 test('deleteUnit', () => {
     let exampleMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
     let success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(true);
     let units = unitManager.getUnitsOfPlayer(exampleUnit.unitPlayer);
@@ -106,7 +96,7 @@ test('deleteUnit', () => {
 });
 test('getUnitsByCoordinates', () => {
     let exampleMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
     let success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(true);
     let otherUnit = {...exampleUnit};
@@ -124,7 +114,7 @@ test('getUnitsByCoordinates', () => {
 });
 test('moveUnit', () => {
     let exampleMap:number [] = Array(16).fill(0);
-    const unitManager = new UnitManager([...exampleMap], 1, 4, 4);
+    const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
     let success = unitManager.createUnit(exampleUnit);
     expect(success).toBe(true);
     const newPosition = {q: 1, r: 1, s: -2};

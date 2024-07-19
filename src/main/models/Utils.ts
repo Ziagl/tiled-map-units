@@ -14,8 +14,8 @@ export class Utils {
     public static getUnitIdOnPosition(coordinates: CubeCoordinates, map: number[][], hexDefinition: any): number {
         const hex = new hexDefinition([coordinates.q, coordinates.r]);
         const offset = hexToOffset(hex);
-
-        return map[offset.row]?.[offset.col] ?? 0;
+        // @ts-ignore
+        return map[offset.row][offset.col] ?? 0;
     }
 
     // sets the storage value of unit map of given layer

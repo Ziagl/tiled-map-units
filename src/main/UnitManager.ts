@@ -10,19 +10,32 @@ export class UnitManager
     private _map:number[][][] = []; // 2D array with different layers (3rd dimension)
     private _map_layers:number = 0;
     private _map_columns:number = 0;
-    private _map_rows:number = 0;
     private _hexDefinition;
 
-    constructor(map:number[], layers:number, rows:number, columns:number) {
+    constructor(map:number[], layers:number, rows:number, columns:number, notPassableTiles:number[][]) {
         // create maps for each possible layer (sea, land,air)
         const layerSize = rows * columns;
         for(let i = 0; i < layers; ++i) {
-            const layer = Utils.convertTo2DArray(map.slice(i * layerSize, (i + 1) * layerSize), rows, columns);
+            let mapArray = new Array<number>;
+            map.slice(i * layerSize, (i + 1) * layerSize).forEach((value) => {
+                if(notPassableTiles !== undefined && 
+                   notPassableTiles.length == layers && 
+                   notPassableTiles[i] !== undefined) {
+                    // @ts-ignore
+                    if(notPassableTiles[i].includes(value)) {
+                        mapArray.push(TileType.UNPASSABLE);
+                    } else {
+                        mapArray.push(TileType.EMPTY);
+                    }
+                } else {
+                    mapArray.push(TileType.EMPTY);
+                }
+            });
+            const layer = Utils.convertTo2DArray(mapArray, rows, columns);
             this._map.push(layer);
         }
         this._map_layers = layers;
         this._map_columns = columns;
-        this._map_rows = rows;
 
         // initilize definition to convert offset -> cube coordinates
         const hexSetting = {offset: -1 as HexOffset, orientation: Orientation.POINTY};
@@ -30,26 +43,6 @@ export class UnitManager
 
         // initialize unit store
         this._unitStore = new Map<number, IUnit>();
-    }
-
-    // pass an array to mask all not passable fields (value > 0 == unpassable field)
-    public markNonPassableFields(map:number[], layer:number):boolean {
-        // early exit if data is not correct
-        if(layer < 0 || layer >= this._map_layers || map.length !== this._map_rows * this._map_columns) {
-            return false;
-        }
-        const map2d = Utils.convertTo2DArray(map, this._map_rows, this._map_columns);
-        //  modify map
-        for(let i = 0; i < this._map_rows; ++i) {
-            for(let j = 0; j < this._map_columns; ++j) {
-                // @ts-ignore
-                if(map2d[i][j] !== 0) {
-                    // @ts-ignore
-                    this._map[layer][i][j] = TileType.UNPASSABLE;
-                }
-            }
-        }
-        return true;
     }
 
     // creates a new unit at given layer, returns false if not possible
@@ -108,7 +101,7 @@ export class UnitManager
             const unitId = Utils.getUnitIdOnPosition(coords, this._map[layer]!, this._hexDefinition);
             if(unitId !== TileType.EMPTY && unitId !== TileType.UNPASSABLE) {
                 const unit = this._unitStore.get(unitId);
-                if(unit && unit.unitPlayer == playerId) {
+                if(unit && unit.unitPlayer === playerId) {
                     foundUnits.push(unit);
                 }
             }
