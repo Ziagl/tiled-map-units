@@ -91,6 +91,11 @@ export class UnitManager {
     return true;
   }
 
+  // get unit by id
+  public getUnitById(unitId: number): IUnit | undefined {
+    return this._unitStore.get(unitId);
+  }
+
   // returns all units on this coordinates for given player
   public getUnitsByCoordinates(coords: CubeCoordinates, playerId: number): IUnit[] {
     let foundUnits: IUnit[] = [];

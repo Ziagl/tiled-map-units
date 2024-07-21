@@ -122,3 +122,11 @@ test('moveUnit', () => {
   expect(success).toBe(true);
   expect(exampleUnit.unitPosition).toStrictEqual(newPosition);
 });
+test('getUnit', () => {
+  let exampleMap: number[] = Array(16).fill(0);
+  const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
+  let success = unitManager.createUnit(exampleUnit);
+  expect(success).toBe(true);
+  const unit = unitManager.getUnitById(exampleUnit.unitId);
+  expect(unit).toStrictEqual(exampleUnit);
+});
