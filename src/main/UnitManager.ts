@@ -72,7 +72,7 @@ export class UnitManager {
     return true;
   }
 
-  // move unit
+  // move unit (must compute path first and is slower as moveUnitByPath)
   public moveUnit(unitId: number, destination: CubeCoordinates): boolean {
     const unit = this._unitStore.get(unitId);
     if (unit === undefined) {
@@ -83,11 +83,48 @@ export class UnitManager {
     if (unitIdOnDestination !== TileType.EMPTY) {
       return false;
     }
+
+    // todo filed shortest path and check if it is possible to move there
+    // TODO
+
     // remove unit from old position
     Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition, TileType.EMPTY);
     // set unit to new position
     Utils.setUnitIdOnPosition(destination, this._map[unit.unitLayer]!, this._hexDefinition, unitId);
     unit.unitPosition = destination;
+    return true;
+  }
+
+  // move unit by path
+  public moveUnitByPath(unitId: number, path: CubeCoordinates[]): boolean {
+    const unit = this._unitStore.get(unitId);
+    if (unit === undefined) {
+      return false;
+    }
+    // early exit if  path is empty
+    if (path.length === 0) {
+      return false;
+    }
+    // early exit if path is too long for correct movement
+    if ((path.length - 1) > unit.unitMovement) {
+      return false;
+    }
+    // early exit if start is not given unit
+    const unitIdOnStart = Utils.getUnitIdOnPosition(path[0]!, this._map[unit.unitLayer]!, this._hexDefinition);
+    if (unitIdOnStart !== unitId) {
+      return false;
+    }
+    // early exit if destination is not passable
+    const unitIdOnDestination = Utils.getUnitIdOnPosition(path[path.length - 1]!, this._map[unit.unitLayer]!, this._hexDefinition);
+    if (unitIdOnDestination !== TileType.EMPTY) {
+      return false;
+    }
+    // remove unit from old position
+    Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition, TileType.EMPTY);
+    // set unit to new position
+    Utils.setUnitIdOnPosition(path[path.length - 1]!, this._map[unit.unitLayer]!, this._hexDefinition, unitId);
+    unit.unitPosition = path[path.length - 1]!;
+    unit.unitMovement = unit.unitMovement - (path.length - 1);
     return true;
   }
 

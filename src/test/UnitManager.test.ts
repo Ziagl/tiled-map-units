@@ -94,6 +94,14 @@ test('deleteUnit', () => {
   units = unitManager.getUnitsOfPlayer(exampleUnit.unitPlayer);
   expect(units.length).toBe(0);
 });
+test('getUnit', () => {
+  let exampleMap: number[] = Array(16).fill(0);
+  const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
+  let success = unitManager.createUnit(exampleUnit);
+  expect(success).toBe(true);
+  const unit = unitManager.getUnitById(exampleUnit.unitId);
+  expect(unit).toStrictEqual(exampleUnit);
+});
 test('getUnitsByCoordinates', () => {
   let exampleMap: number[] = Array(16).fill(0);
   const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
@@ -115,18 +123,24 @@ test('getUnitsByCoordinates', () => {
 test('moveUnit', () => {
   let exampleMap: number[] = Array(16).fill(0);
   const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
-  let success = unitManager.createUnit(exampleUnit);
+  const movableUnit = { ...exampleUnit };
+  let success = unitManager.createUnit(movableUnit);
   expect(success).toBe(true);
   const newPosition = { q: 1, r: 1, s: -2 };
-  success = unitManager.moveUnit(exampleUnit.unitId, newPosition);
+  success = unitManager.moveUnit(movableUnit.unitId, newPosition);
   expect(success).toBe(true);
-  expect(exampleUnit.unitPosition).toStrictEqual(newPosition);
+  expect(movableUnit.unitPosition).toStrictEqual(newPosition);
 });
-test('getUnit', () => {
+test('moveUnitByPath', () => {
   let exampleMap: number[] = Array(16).fill(0);
   const unitManager = new UnitManager([...exampleMap], 1, 4, 4, [[]]);
-  let success = unitManager.createUnit(exampleUnit);
+  const movableUnit = { ...exampleUnit };
+  let success = unitManager.createUnit(movableUnit);
   expect(success).toBe(true);
-  const unit = unitManager.getUnitById(exampleUnit.unitId);
-  expect(unit).toStrictEqual(exampleUnit);
+  const path = [{ q:0, r:0, s:0},
+                { q:1, r:0, s:-1},
+                { q:1, r:1, s:-2}];
+  success = unitManager.moveUnitByPath(movableUnit.unitId, path);
+  expect(success).toBe(true);
+  expect(movableUnit.unitPosition).toStrictEqual(path[path.length - 1]);
 });
