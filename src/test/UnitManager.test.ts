@@ -137,9 +137,11 @@ test('moveUnitByPath', () => {
   const movableUnit = { ...exampleUnit };
   let success = unitManager.createUnit(movableUnit);
   expect(success).toBe(true);
-  const path = [{ q:0, r:0, s:0},
-                { q:1, r:0, s:-1},
-                { q:1, r:1, s:-2}];
+  const path = [
+    { q: 0, r: 0, s: 0 },
+    { q: 1, r: 0, s: -1 },
+    { q: 1, r: 1, s: -2 },
+  ];
   success = unitManager.moveUnitByPath(movableUnit.unitId, path);
   expect(success).toBe(true);
   expect(movableUnit.unitPosition).toStrictEqual(path[path.length - 1]);

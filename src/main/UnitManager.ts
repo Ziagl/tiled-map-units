@@ -12,7 +12,7 @@ export class UnitManager {
   private _hexDefinition;
 
   constructor(map: number[], layers: number, rows: number, columns: number, notPassableTiles: number[][]) {
-    // create maps for each possible layer (sea, land,air)
+    // create maps for each possible layer (sea, land, air)
     const layerSize = rows * columns;
     for (let i = 0; i < layers; ++i) {
       let mapArray = new Array<number>();
@@ -42,7 +42,11 @@ export class UnitManager {
     this._unitStore = new Map<number, IUnit>();
   }
 
-  // creates a new unit at given layer, returns false if not possible
+  /**
+   * creates a new unit at given layer, returns false if not possible
+   * @param unit unit to create
+   * @returns true if unit was created, false if layer is invalid or position is already occupied
+   */
   public createUnit(unit: IUnit): boolean {
     // early exit if layer is not valid
     if (unit.unitLayer < 0 || unit.unitLayer >= this._map_layers) {
@@ -61,7 +65,11 @@ export class UnitManager {
     return true;
   }
 
-  // removes unit with given unit id from map
+  /**
+   * removes unit with given unit id from map
+   * @param unitId id of unit
+   * @returns true if unit was removed, false if unit was not found
+   */
   public removeUnit(unitId: number): boolean {
     const unit = this._unitStore.get(unitId);
     if (unit === undefined) {
@@ -72,7 +80,12 @@ export class UnitManager {
     return true;
   }
 
-  // move unit (must compute path first and is slower as moveUnitByPath)
+  /**
+   * move unit (must compute path first and is slower as moveUnitByPath)
+   * @param unitId id of unit
+   * @param destination destination coordinates
+   * @returns true if unit was moved, false if unit was not found or destination is not passable
+   */
   public moveUnit(unitId: number, destination: CubeCoordinates): boolean {
     const unit = this._unitStore.get(unitId);
     if (unit === undefined) {
@@ -83,10 +96,6 @@ export class UnitManager {
     if (unitIdOnDestination !== TileType.EMPTY) {
       return false;
     }
-
-    // todo filed shortest path and check if it is possible to move there
-    // TODO
-
     // remove unit from old position
     Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition, TileType.EMPTY);
     // set unit to new position
@@ -95,7 +104,12 @@ export class UnitManager {
     return true;
   }
 
-  // move unit by path
+  /**
+   * move unit by path
+   * @param unitId id of unit
+   * @param path path to destination
+   * @returns true if unit was moved, false if unit was not found, path is empty, path is too long or start is not given unit
+   */
   public moveUnitByPath(unitId: number, path: CubeCoordinates[]): boolean {
     const unit = this._unitStore.get(unitId);
     if (unit === undefined) {
@@ -106,7 +120,7 @@ export class UnitManager {
       return false;
     }
     // early exit if path is too long for correct movement
-    if ((path.length - 1) > unit.unitMovement) {
+    if (path.length - 1 > unit.unitMovement) {
       return false;
     }
     // early exit if start is not given unit
@@ -115,7 +129,11 @@ export class UnitManager {
       return false;
     }
     // early exit if destination is not passable
-    const unitIdOnDestination = Utils.getUnitIdOnPosition(path[path.length - 1]!, this._map[unit.unitLayer]!, this._hexDefinition);
+    const unitIdOnDestination = Utils.getUnitIdOnPosition(
+      path[path.length - 1]!,
+      this._map[unit.unitLayer]!,
+      this._hexDefinition,
+    );
     if (unitIdOnDestination !== TileType.EMPTY) {
       return false;
     }
@@ -128,12 +146,21 @@ export class UnitManager {
     return true;
   }
 
-  // get unit by id
+  /**
+   * get unit by id
+   * @param unitId id of unit
+   * @returns unit if found, undefined if not found
+   */
   public getUnitById(unitId: number): IUnit | undefined {
     return this._unitStore.get(unitId);
   }
 
-  // returns all units on this coordinates for given player
+  /**
+   * get all units on this coordinates for given player
+   * @param coords coordinates to search for
+   * @param playerId player id to search for
+   * @returns array of units on this coordinates for given player, if no unit was found, empty array
+   */
   public getUnitsByCoordinates(coords: CubeCoordinates, playerId: number): IUnit[] {
     let foundUnits: IUnit[] = [];
     for (let layer = 0; layer < this._map_layers; ++layer) {
@@ -148,7 +175,11 @@ export class UnitManager {
     return foundUnits;
   }
 
-  // returns all units of given player number
+  /**
+   * all units of given player number
+   * @param playerId player id to search for
+   * @returns array of units for given player, if no unit was found, empty array
+   */
   public getUnitsOfPlayer(playerId: number): IUnit[] {
     let units: IUnit[] = [];
     this._unitStore.forEach((unit) => {
@@ -159,7 +190,10 @@ export class UnitManager {
     return units;
   }
 
-  // print generated map structured (one row as one line)
+  /**
+   * print generated map structured (one row as one line)
+   * @returns string representation of map
+   */
   public print(): string {
     let response: string = '';
     for (let l = 0; l < this._map_layers; ++l) {
