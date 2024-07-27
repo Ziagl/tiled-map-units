@@ -9,6 +9,7 @@ const exampleUnit = {
   unitHealth: 100,
   unitMaxHealth: 100,
   unitMovement: 10,
+  unitMaxMovement: 10,
   unitAttack: 10,
   unitDefense: 10,
   unitRange: 1,

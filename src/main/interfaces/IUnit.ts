@@ -7,11 +7,12 @@ export interface IUnit {
   unitType: number; // the type of this unit (value of an enum?)
   unitHealth: number; // current health points
   unitMaxHealth: number; // maximum health points
+  unitMovement: number; // current movement points
+  unitMaxMovement: number; // maximum movement points (affects movement range)
   // position
   unitPosition: CubeCoordinates; // its position on the map
   unitLayer: number; // index of layer this unit is on
   // stats
-  unitMovement: number; // movement points (affects movement range)
   unitAttack: number; // attack points (damage in fight)
   unitDefense: number; // defence points (how much damage is reduced)
   unitRange: number; // attack range (how far can this unit attack)
