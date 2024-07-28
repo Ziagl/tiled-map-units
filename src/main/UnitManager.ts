@@ -1,6 +1,6 @@
 import { CubeCoordinates, HexOffset, Orientation, defineHex } from 'honeycomb-grid';
 import { IUnit } from './interfaces/IUnit';
-import { Utils } from './models/Utils';
+import { Utils } from '@ziagl/tiled-map-utils';
 import { TileType } from './enums/TileType';
 
 export class UnitManager {
