@@ -1,10 +1,11 @@
 import { CubeCoordinates } from 'honeycomb-grid';
+import { UnitType } from '../enums/UnitType';
 
 export interface IUnit {
   // base
   unitId: number; // id = index in unit store
   unitPlayer: number; // id of player this unit belongs to
-  unitType: number; // the type of this unit (value of an enum?)
+  unitType: UnitType; // the type of this unit (value of an enum?)
   unitHealth: number; // current health points
   unitMaxHealth: number; // maximum health points
   unitMovement: number; // current movement points
@@ -17,6 +18,8 @@ export interface IUnit {
   unitDefense: number; // defence points (how much damage is reduced)
   unitRange: number; // attack range (how far can this unit attack)
   // flags
-  canAttack: boolean; // can this unit attack?
-  canMove: boolean; // can this unit move?
+  unitCanAttack: boolean; // can this unit attack?
+  // economy
+  unitProductionCost: number; // amount of production needed to build this unit
+  unitPurchaseCost: number; // amount of gold needed to purchase this unit
 }

@@ -1,11 +1,13 @@
 import { UnitManager } from '../main';
+import { UnitType } from '../main/enums/UnitType';
+import { UnitFactory } from '../main/models/UnitFactory';
 
 const exampleUnit = {
   unitId: 0,
   unitPosition: { q: 0, r: 0, s: 0 },
   unitLayer: 0,
   unitPlayer: 1,
-  unitType: 1,
+  unitType: UnitType.SETTLER,
   unitHealth: 100,
   unitMaxHealth: 100,
   unitMovement: 10,
@@ -13,8 +15,9 @@ const exampleUnit = {
   unitAttack: 10,
   unitDefense: 10,
   unitRange: 1,
-  canAttack: true,
-  canMove: true,
+  unitCanAttack: true,
+  unitProductionCost: 0,
+  unitPurchaseCost: 0,
 };
 
 test('initialize', () => {
@@ -146,4 +149,10 @@ test('moveUnitByPath', () => {
   success = unitManager.moveUnitByPath(movableUnit.unitId, path);
   expect(success).toBe(true);
   expect(movableUnit.unitPosition).toStrictEqual(path[path.length - 1]);
+});
+test('createUnitByFactory', () => {
+  const unitFactory = new UnitFactory('units.json');
+  unitFactory.createUnit(exampleUnit);
+  expect(exampleUnit.unitProductionCost).toBeGreaterThan(0);
+  expect(exampleUnit.unitPurchaseCost).toBeGreaterThan(0);
 });
