@@ -2,6 +2,7 @@ import { CubeCoordinates, HexOffset, Orientation, defineHex } from 'honeycomb-gr
 import { IUnit } from './interfaces/IUnit';
 import { Utils } from '@ziagl/tiled-map-utils';
 import { TileType } from './enums/TileType';
+import { UnitFactory } from './models/UnitFactory';
 
 export class UnitManager {
   private _unitStore: Map<number, IUnit>;
@@ -10,16 +11,23 @@ export class UnitManager {
   private _map_layers: number = 0;
   private _map_columns: number = 0;
   private _hexDefinition;
+  private _factory: UnitFactory;
 
-  constructor(map: number[], layers: number, rows: number, columns: number, notPassableTiles: number[][]) {
+  constructor(
+    map: number[],
+    layers: number,
+    rows: number,
+    columns: number,
+    notPassableTiles: number[][],
+    unitDefinitions: IUnit[] = [],
+  ) {
     // create maps for each possible layer (sea, land, air)
     const layerSize = rows * columns;
     for (let i = 0; i < layers; ++i) {
       let mapArray = new Array<number>();
       map.slice(i * layerSize, (i + 1) * layerSize).forEach((value) => {
         if (notPassableTiles !== undefined && notPassableTiles.length == layers && notPassableTiles[i] !== undefined) {
-          // @ts-ignore
-          if (notPassableTiles[i].includes(value)) {
+          if (notPassableTiles[i]?.includes(value)) {
             mapArray.push(TileType.UNPASSABLE);
           } else {
             mapArray.push(TileType.EMPTY);
@@ -40,6 +48,9 @@ export class UnitManager {
 
     // initialize unit store
     this._unitStore = new Map<number, IUnit>();
+
+    // create factory
+    this._factory = new UnitFactory(unitDefinitions);
   }
 
   /**
@@ -57,6 +68,7 @@ export class UnitManager {
     if (unitId != TileType.EMPTY) {
       return false;
     }
+    this._factory.createUnit(unit);
     // add unit to store
     this._lastUnitStoreId = this._lastUnitStoreId + 1;
     unit.unitId = this._lastUnitStoreId;

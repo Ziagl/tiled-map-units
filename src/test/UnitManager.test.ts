@@ -1,4 +1,4 @@
-import { UnitManager } from '../main';
+import { IUnit, UnitManager } from '../main';
 import { UnitType } from '../main/enums/UnitType';
 import { UnitFactory } from '../main/models/UnitFactory';
 
@@ -150,8 +150,11 @@ test('moveUnitByPath', () => {
   expect(success).toBe(true);
   expect(movableUnit.unitPosition).toStrictEqual(path[path.length - 1]);
 });
-test('createUnitByFactory', () => {
-  const unitFactory = new UnitFactory('units.json');
+test('createUnitByFactory', async () => {
+  const unitDefinitions = JSON.parse(
+    '[{"unitType": 1,"unitProductionCost": 80,"unitPurchaseCost": 320},{"unitType": 2,"unitProductionCost": 0,"unitPurchaseCost": 0}]',
+  ) as IUnit[];
+  const unitFactory = new UnitFactory(unitDefinitions);
   unitFactory.createUnit(exampleUnit);
   expect(exampleUnit.unitProductionCost).toBeGreaterThan(0);
   expect(exampleUnit.unitPurchaseCost).toBeGreaterThan(0);

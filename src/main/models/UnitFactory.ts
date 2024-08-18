@@ -1,48 +1,22 @@
-import { IUnit } from "../interfaces/IUnit";
-
-const fs = require('fs');
+import { IUnit } from '../interfaces/IUnit';
 
 export class UnitFactory {
-    private unitDefinitions:IUnit[] = [];
+  private unitDefinitions: IUnit[] = [];
 
-    constructor(configFilePath: string) {
-        this.initialize(configFilePath);
-    }
+  constructor(unitDefinitions: IUnit[]) {
+    this.unitDefinitions = unitDefinitions;
+  }
 
-    private async initialize(configFilePath: string) {
-        this.unitDefinitions = await this.loadJsonFile(configFilePath) as IUnit[];
+  public createUnit(unit: IUnit) {
+    const unitDefinition = this.unitDefinitions.find((unitDefinition) => unitDefinition.unitType === unit.unitType);
+    if (unitDefinition != undefined) {
+      unit.unitMaxMovement = unitDefinition.unitMaxMovement ?? 0;
+      unit.unitAttack = unitDefinition.unitAttack ?? 0;
+      unit.unitDefense = unitDefinition.unitDefense ?? 0;
+      unit.unitRange = unitDefinition.unitRange ?? 0;
+      unit.unitCanAttack = unitDefinition.unitCanAttack ?? false;
+      unit.unitProductionCost = unitDefinition.unitProductionCost ?? 0;
+      unit.unitPurchaseCost = unitDefinition.unitPurchaseCost ?? 0;
     }
-
-    public createUnit(unit: IUnit) {
-        const unitDefinition = this.unitDefinitions.find(unitDefinition => unitDefinition.unitType === unit.unitType);
-        if(unitDefinition != undefined) {
-            unit.unitMaxMovement = unitDefinition.unitMaxMovement;
-            unit.unitAttack = unitDefinition.unitAttack;
-            unit.unitDefense = unitDefinition.unitDefense;
-            unit.unitRange = unitDefinition.unitRange;
-            unit.unitCanAttack = unitDefinition.unitCanAttack;
-            unit.unitProductionCost = unitDefinition.unitProductionCost;
-            unit.unitPurchaseCost = unitDefinition.unitPurchaseCost;
-        }
-    }
-
-    private async loadJsonFile(filePath: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            fs.readFile(filePath, 'utf8', (err: any, data: string) => {
-                if (err) {
-                    console.log("error: " + err);
-                    reject([]);
-                } else {
-                    try {
-                        const jsonData = JSON.parse(data) as IUnit[];
-                        console.log("found data " + data);
-                        resolve(jsonData);
-                    } catch (parseErr) {
-                        console.log("parse error: "+parseErr);
-                        reject([]);
-                    }
-                }
-            });
-        });
-    }
+  }
 }
