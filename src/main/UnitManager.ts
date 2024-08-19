@@ -87,8 +87,10 @@ export class UnitManager {
     if (unit === undefined) {
       return false;
     }
+    // remove from map
+    Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitLayer]!, this._hexDefinition, TileType.EMPTY);
+    // remove from store
     this._unitStore.delete(unitId);
-    Utils.setUnitIdOnPosition(unit.unitPosition, this._map[unit.unitPosition.s]!, this._hexDefinition, TileType.EMPTY);
     return true;
   }
 
